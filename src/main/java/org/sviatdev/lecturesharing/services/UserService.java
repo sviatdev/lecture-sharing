@@ -3,6 +3,7 @@ package org.sviatdev.lecturesharing.services;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.sviatdev.lecturesharing.dao.UserDao;
+import org.sviatdev.lecturesharing.models.University;
 import org.sviatdev.lecturesharing.models.User;
 
 import java.util.List;
@@ -27,6 +28,14 @@ public class UserService {
 
     public ResponseEntity<Optional<User>> getUserById(Long id) {
        return ResponseEntity.ok(userDao.findById(id));
+    }
+
+    public User findByUsername(String userName) {
+        return userDao.findByUsername(userName);
+    }
+
+    public ResponseEntity<?> findUsersByUniversity(University university) {
+            return ResponseEntity.ok(userDao.findUsersByUniversity(university));
     }
 
     public void removeUser(Long id) {

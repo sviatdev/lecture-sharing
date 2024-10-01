@@ -2,6 +2,7 @@ package org.sviatdev.lecturesharing.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.sviatdev.lecturesharing.models.University;
 import org.sviatdev.lecturesharing.models.User;
 import org.sviatdev.lecturesharing.services.UserService;
 
@@ -23,9 +24,19 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping(value = "/get/{id}")
+    @GetMapping("/university={university}/all")
+    public ResponseEntity<?> getUsersByUniversity(@PathVariable String university) {
+        return userService.findUsersByUniversity(University.valueOf(university));
+    }
+
+    @GetMapping("/get/{id}")
     public ResponseEntity<Optional<User>> getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
+    }
+
+    @GetMapping("/get/")
+    public User findByUsername(String username) {
+        return userService.findByUsername(username);
     }
 
     @PostMapping("/insert/{user}")
