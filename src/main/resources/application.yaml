@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: @artifactId@
+  datasource:
+    username: 'sviatdev'
+    url: jdbc:postgresql://localhost:5432/postgres
+    password: 'sviatdev'
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  sql:
+    init:
+      mode: always
+
+server:
+  port: 8080
