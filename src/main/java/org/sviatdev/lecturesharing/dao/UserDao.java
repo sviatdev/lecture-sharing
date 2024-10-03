@@ -7,11 +7,12 @@ import org.sviatdev.lecturesharing.models.University;
 import org.sviatdev.lecturesharing.models.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserDao extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.username = :username")
-    User findByUsername(@Param("username") String username);
+    Optional<User> findByUsername(@Param("username") String username);
 
     @Query("SELECT u FROM User u WHERE u.university = :university")
     List<User> findUsersByUniversity(@Param("university") University university);

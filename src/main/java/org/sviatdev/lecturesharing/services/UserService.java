@@ -24,6 +24,10 @@ public class UserService {
     }
 
     public ResponseEntity<User> insertUser(User user) {
+        if (isUserExist(user)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(user);
+        }
+
         return ResponseEntity.ok(userDao.save(user));
     }
 
@@ -36,7 +40,7 @@ public class UserService {
 
     public ResponseEntity<?> findByUsername(String userName) {
         var user = userDao.findByUsername(userName);
-        return user != null
+        return user.isPresent()
                 ? ResponseEntity.ok(user)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No user found.");
     }
@@ -50,5 +54,9 @@ public class UserService {
 
     public void removeUser(Long id) {
         userDao.deleteById(id);
+    }
+
+    private boolean isUserExist(User user) {
+        return userDao.findByUsername(user.getUsername()).isPresent();
     }
 }

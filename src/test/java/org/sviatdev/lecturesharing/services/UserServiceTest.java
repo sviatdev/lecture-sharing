@@ -2,7 +2,6 @@ package org.sviatdev.lecturesharing.services;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.sviatdev.lecturesharing.dao.UserDao;
 import org.sviatdev.lecturesharing.models.Role;
 import org.sviatdev.lecturesharing.models.University;
@@ -73,19 +72,19 @@ class UserServiceTest {
     @Test
     void findByUsername_success() {
         // Given
-        when(userDao.findByUsername(anyString())).thenReturn(USER);
+        when(userDao.findByUsername(anyString())).thenReturn(Optional.of(USER));
         // When
         var result = userService.findByUsername(anyString());
         // Then
         assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals(USER, result.getBody());
+        assertEquals(Optional.of(USER), result.getBody());
         verify(userDao, times(1)).findByUsername(anyString());
     }
 
     @Test
     void findByUsername_error() {
         // Given
-        when(userDao.findByUsername(anyString())).thenReturn(null);
+        when(userDao.findByUsername(anyString())).thenReturn(Optional.empty());
         // When
         var result = userService.findByUsername(anyString());
         // Then
