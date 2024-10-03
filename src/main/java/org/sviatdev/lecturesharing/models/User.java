@@ -29,17 +29,17 @@ public class User {
     private University university;
 
     @Column
-    private String role;
+    private Role role;
 
     public User() {
     }
 
-    public User(Long id, String username, String password, String name, String lastname, int age, University university, String role) {
+    public User(Long id, String username, String password, String name, String surname, int age, University university, Role role) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
-        this.surname = lastname;
+        this.surname = surname;
         this.age = age;
         this.university = university;
         this.role = role;
@@ -102,11 +102,25 @@ public class User {
         this.university = university;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", age=" + age +
+                ", university=" + university +
+                ", role=" + role +
+                '}';
     }
 }
