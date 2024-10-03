@@ -23,11 +23,10 @@ public class UserService {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
     }
 
-    public ResponseEntity<User> insertUser(User user) {
+    public ResponseEntity<?> insertUser(User user) {
         if (isUserExist(user)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(user);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists.");
         }
-
         return ResponseEntity.ok(userDao.save(user));
     }
 
@@ -52,8 +51,13 @@ public class UserService {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
     }
 
-    public void removeUser(Long id) {
-        userDao.deleteById(id);
+    public ResponseEntity<?> removeUser(Long id) {
+        try {
+            userDao.deleteById(id);
+            return ResponseEntity.ok("User deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+        }
     }
 
     private boolean isUserExist(User user) {

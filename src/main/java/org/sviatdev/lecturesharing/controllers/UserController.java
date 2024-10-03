@@ -6,9 +6,6 @@ import org.sviatdev.lecturesharing.models.University;
 import org.sviatdev.lecturesharing.models.User;
 import org.sviatdev.lecturesharing.services.UserService;
 
-import java.util.List;
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -40,12 +37,12 @@ public class UserController {
     }
 
     @PostMapping("/insert/{user}")
-    public ResponseEntity<User> insertUser(@PathVariable User user) {
+    public ResponseEntity<?> insertUser(@PathVariable User user) {
         return userService.insertUser(user);
     }
 
     @DeleteMapping(value = "/delete/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userService.removeUser(id);
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        return userService.removeUser(id);
     }
 }
