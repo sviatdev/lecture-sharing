@@ -2,6 +2,7 @@ package org.sviatdev.lecturesharing.services;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.sviatdev.lecturesharing.dao.UserDao;
 import org.sviatdev.lecturesharing.models.Role;
 import org.sviatdev.lecturesharing.models.University;
@@ -19,7 +20,7 @@ class UserServiceTest {
 
     private final UserDao userDao = mock(UserDao.class);
     private final UserService userService = new UserService(userDao);
-    private static final User USER = new User(1L, "login", "password", "name", "surname", 25, University.NAU, Role.USER);
+    private final User USER = new User(1L, "login", "password", "name", "surname", 25, University.NAU, Role.USER);
 
     @Test
     void getAllUsers_success() {
@@ -116,4 +117,37 @@ class UserServiceTest {
         assertEquals("No users found.", result.getBody());
         verify(userDao, times(1)).findUsersByUniversity(any(University.class));
     }
+
+    public ResponseEntity<?> removeUser(Long id) {
+        try {
+            userDao.deleteById(id);
+            return ResponseEntity.ok("User deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+        }
+    }
+
+    @Test
+    void removeUser_success() {
+        // Given/When
+        var result = userService.removeUser(USER.getId());
+        // Then
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals("User deleted successfully.", result.getBody());
+        verify(userDao, times(1)).deleteById(any(Long.class));
+
+    }
+
+    @Test
+    void removeUser_error() {
+        // Given
+        doThrow(RuntimeException.class).when(userDao).deleteById(any(Long.class));
+        // When
+        var result = userService.removeUser(USER.getId());
+        // Then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
+        assertEquals("An error occurred.", result.getBody());
+        verify(userDao, times(1)).deleteById(any(Long.class));
+    }
+
 }
