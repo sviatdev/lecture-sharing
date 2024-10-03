@@ -7,8 +7,6 @@ import org.sviatdev.lecturesharing.dao.UserDao;
 import org.sviatdev.lecturesharing.models.University;
 import org.sviatdev.lecturesharing.models.User;
 
-import java.util.Optional;
-
 @Service
 public class UserService {
 
@@ -29,16 +27,25 @@ public class UserService {
         return ResponseEntity.ok(userDao.save(user));
     }
 
-    public ResponseEntity<Optional<User>> getUserById(Long id) {
-        return ResponseEntity.ok(userDao.findById(id));
+    public ResponseEntity<?> getUserById(Long id) {
+        var user = userDao.findById(id);
+        return user.isPresent()
+                ? ResponseEntity.ok(userDao.findById(id))
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
     }
 
-    public User findByUsername(String userName) {
-        return userDao.findByUsername(userName);
+    public ResponseEntity<?> findByUsername(String userName) {
+        var user = userDao.findByUsername(userName);
+        return user != null
+                ? ResponseEntity.ok(user)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
     }
 
     public ResponseEntity<?> findUsersByUniversity(University university) {
-        return ResponseEntity.ok(userDao.findUsersByUniversity(university));
+        var users = userDao.findUsersByUniversity(university);
+        return !users.isEmpty()
+                ? ResponseEntity.ok(users)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
     }
 
     public void removeUser(Long id) {

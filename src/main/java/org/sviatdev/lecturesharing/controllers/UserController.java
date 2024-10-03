@@ -30,12 +30,12 @@ public class UserController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable Long id) {
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
     @GetMapping("/get/")
-    public User findByUsername(String username) {
+    public ResponseEntity<?> findByUsername(String username) {
         return userService.findByUsername(username);
     }
 
