@@ -8,13 +8,11 @@ import org.sviatdev.lecturesharing.models.Role;
 import org.sviatdev.lecturesharing.models.University;
 import org.sviatdev.lecturesharing.models.User;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -71,5 +69,36 @@ class UserServiceTest {
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
         assertEquals("No users found.", result.getBody());
         verify(userDao, times(1)).findById(1L);
+    }
+
+    public ResponseEntity<?> findByUsername(String userName) {
+        var user = userDao.findByUsername(userName);
+        return user != null
+                ? ResponseEntity.ok(user)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
+    }
+
+    @Test
+    void findByUsername_success() {
+        // Given
+        when(userDao.findByUsername(anyString())).thenReturn(USER);
+        // When
+        var result = userService.findByUsername(anyString());
+        // Then
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(USER, result.getBody());
+        verify(userDao, times(1)).findByUsername(anyString());
+    }
+
+    @Test
+    void findByUsername_error() {
+        // Given
+        when(userDao.findByUsername(anyString())).thenReturn(null);
+        // When
+        var result = userService.findByUsername(anyString());
+        // Then
+        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        assertEquals("No user found.", result.getBody());
+        verify(userDao, times(1)).findByUsername(anyString());
     }
 }

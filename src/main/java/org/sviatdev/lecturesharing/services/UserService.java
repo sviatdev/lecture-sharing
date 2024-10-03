@@ -38,7 +38,7 @@ public class UserService {
         var user = userDao.findByUsername(userName);
         return user != null
                 ? ResponseEntity.ok(user)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No user found.");
     }
 
     public ResponseEntity<?> findUsersByUniversity(University university) {
