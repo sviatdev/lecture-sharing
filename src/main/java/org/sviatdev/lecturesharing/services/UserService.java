@@ -51,6 +51,4 @@ public class UserService {
     public void removeUser(Long id) {
         userDao.deleteById(id);
     }
-
-
 }

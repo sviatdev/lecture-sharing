@@ -16,13 +16,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-
 class UserServiceTest {
 
     private final UserDao userDao = mock(UserDao.class);
     private final UserService userService = new UserService(userDao);
-
     private static final User USER = new User(1L, "login", "password", "name", "surname", 25, University.NAU, Role.USER);
+
     @Test
     void getAllUsers_success() {
         // Given
@@ -50,13 +49,13 @@ class UserServiceTest {
     @Test
     void getUserById_success() {
         // Given
-        when(userDao.findById(1L)).thenReturn(Optional.of(USER));
+        when(userDao.findById(any(Long.class))).thenReturn(Optional.of(USER));
         // When
         var result = userService.getUserById(1L);
         // Then
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(Optional.of(USER), result.getBody());
-        verify(userDao, times(1)).findById(1L);
+        verify(userDao, times(1)).findById(any(Long.class));
     }
 
     @Test
@@ -69,13 +68,6 @@ class UserServiceTest {
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
         assertEquals("No users found.", result.getBody());
         verify(userDao, times(1)).findById(1L);
-    }
-
-    public ResponseEntity<?> findByUsername(String userName) {
-        var user = userDao.findByUsername(userName);
-        return user != null
-                ? ResponseEntity.ok(user)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
     }
 
     @Test
@@ -100,5 +92,29 @@ class UserServiceTest {
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
         assertEquals("No user found.", result.getBody());
         verify(userDao, times(1)).findByUsername(anyString());
+    }
+
+    @Test
+    void findUsersByUniversity_success() {
+        // Given
+        when(userDao.findUsersByUniversity(any(University.class))).thenReturn(List.of(USER));
+        // When
+        var result = userService.findUsersByUniversity(University.NAU);
+        // Then
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(List.of(USER), result.getBody());
+        verify(userDao, times(1)).findUsersByUniversity(any(University.class));
+    }
+
+    @Test
+    void findUsersByUniversity_error() {
+        // Given
+        when(userDao.findUsersByUniversity(any(University.class))).thenReturn(Collections.emptyList());
+        // When
+        var result = userService.findUsersByUniversity(University.NAU);
+        // Then
+        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        assertEquals("No users found.", result.getBody());
+        verify(userDao, times(1)).findUsersByUniversity(any(University.class));
     }
 }
