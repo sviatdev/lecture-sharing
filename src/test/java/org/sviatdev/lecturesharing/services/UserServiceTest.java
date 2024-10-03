@@ -2,6 +2,7 @@ package org.sviatdev.lecturesharing.services;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.sviatdev.lecturesharing.dao.UserDao;
 import org.sviatdev.lecturesharing.models.Role;
 import org.sviatdev.lecturesharing.models.University;
@@ -10,12 +11,12 @@ import org.sviatdev.lecturesharing.models.User;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 class UserServiceTest {
@@ -32,6 +33,8 @@ class UserServiceTest {
         var result = userService.getAllUsers();
         // Then
         assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(List.of(USER), result.getBody());
+        verify(userDao, times(1)).findAll();
     }
 
     @Test
@@ -42,5 +45,28 @@ class UserServiceTest {
         var result = userService.getAllUsers();
         // Then
         assertEquals("No users found.", result.getBody());
+    }
+
+    @Test
+    void getUserById_success() {
+        // Given
+        when(userDao.findById(1L)).thenReturn(Optional.of(USER));
+        // When
+        var result = userService.getUserById(1L);
+        // Then
+        verify(userDao, times(1)).findById(1L);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(Optional.of(USER), result.getBody());
+    }
+
+    @Test
+    void getUserById_error() {
+        // Given
+        when(userDao.findById(1L)).thenReturn(Optional.empty());
+        // When
+        userService.getUserById(1L);
+        // Then
+        assertEquals(HttpStatus.NOT_FOUND, userService.getUserById(1L).getStatusCode());
+        assertEquals("No users found.", userService.getUserById(1L).getBody());
     }
 }

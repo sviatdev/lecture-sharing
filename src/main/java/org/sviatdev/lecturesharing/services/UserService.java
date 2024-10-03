@@ -30,7 +30,7 @@ public class UserService {
     public ResponseEntity<?> getUserById(Long id) {
         var user = userDao.findById(id);
         return user.isPresent()
-                ? ResponseEntity.ok(userDao.findById(id))
+                ? ResponseEntity.ok(user)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
     }
 
