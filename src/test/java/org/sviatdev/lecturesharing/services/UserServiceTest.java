@@ -44,7 +44,9 @@ class UserServiceTest {
         // When
         var result = userService.getAllUsers();
         // Then
+        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
         assertEquals("No users found.", result.getBody());
+        verify(userDao, times(1)).findAll();
     }
 
     @Test
@@ -54,9 +56,9 @@ class UserServiceTest {
         // When
         var result = userService.getUserById(1L);
         // Then
-        verify(userDao, times(1)).findById(1L);
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(Optional.of(USER), result.getBody());
+        verify(userDao, times(1)).findById(1L);
     }
 
     @Test
@@ -64,9 +66,10 @@ class UserServiceTest {
         // Given
         when(userDao.findById(1L)).thenReturn(Optional.empty());
         // When
-        userService.getUserById(1L);
+        var result = userService.getUserById(1L);
         // Then
-        assertEquals(HttpStatus.NOT_FOUND, userService.getUserById(1L).getStatusCode());
-        assertEquals("No users found.", userService.getUserById(1L).getBody());
+        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        assertEquals("No users found.", result.getBody());
+        verify(userDao, times(1)).findById(1L);
     }
 }
