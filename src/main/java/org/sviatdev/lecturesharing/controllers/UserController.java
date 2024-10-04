@@ -20,7 +20,7 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getUsers(@RequestParam(required = false) Long id) {
+    public ResponseEntity<?> getUsers(@RequestParam(required = false) String id) {
         if (id != null) {
             return ResponseEntity.ok(userService.getUserById(id));
         }
@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/delete")
-    public ResponseEntity<?> deleteUser(@RequestParam Long id) {
+    public ResponseEntity<?> deleteUser(@RequestParam String id) {
         userService.removeUser(id);
         return ResponseEntity.noContent().build();
     }

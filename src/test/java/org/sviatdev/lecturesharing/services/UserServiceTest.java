@@ -72,7 +72,7 @@ class UserServiceTest {
 // TODO: rewrite tests
 
     @Test
-    void getAllUsers_success() {
+    void getAllUsers_returnListOfUsers() {
         // Given
         var list = List.of(USER_1, USER_2);
         when(userDao.findAll()).thenReturn(list);
@@ -83,7 +83,7 @@ class UserServiceTest {
     }
 
     @Test
-    void getAllUsers_error() {
+    void getAllUsers_throwUserNotFoundException() {
         // Given
         when(userDao.findAll()).thenReturn(Collections.emptyList());
         // When/Then
@@ -91,7 +91,41 @@ class UserServiceTest {
     }
 
     @Test
-    void findByUsername_success() {
+    void getUserById_returnOptionalUser() {
+        // Given
+        var id = "1";
+        when(userDao.findById(any())).thenReturn(Optional.of(USER_1));
+        // When
+        var user = userService.getUserById(id);
+        // Then
+        assertEquals(user, Optional.of(USER_1));
+    }
+
+    @Test
+    void getUserById_returnEmptyOptional() {
+        // Given
+        var id = "1";
+        when(userDao.findById(any())).thenReturn(Optional.empty());
+        // When
+        var user = userService.getUserById(id);
+        // Then
+        assertEquals(user, Optional.empty());
+    }
+
+    @Test
+    void getUserById_throwIllegalArgumentExceptionIfIdIsString() {
+        // Given/When/Then
+        assertThrows(IllegalArgumentException.class, () -> userService.getUserById("qwerty"));
+    }
+
+    @Test
+    void getUserById_throwIllegalArgumentExceptionIfIdIsSymbols() {
+        // Given/When/Then
+        assertThrows(IllegalArgumentException.class, () -> userService.getUserById("!@#$%^&*()_-+="));
+    }
+
+    @Test
+    void findByUsername_returnOptionalUser() {
         // Given
         when(userDao.findByUsername(anyString())).thenReturn(Optional.of(USER_1));
         // When
@@ -101,7 +135,7 @@ class UserServiceTest {
     }
 
     @Test
-    void findByUsername_error() {
+    void findByUsername_returnOptionalEmptyList() {
         // Given
         when(userDao.findByUsername(anyString())).thenReturn(Optional.empty());
         // When
@@ -123,17 +157,17 @@ class UserServiceTest {
     }
 
     @Test
-    void findUsersByUniversity_success() {
+    void findUsersByUniversity_returnUsers() {
         // Given
-        when(userDao.findByUniversity(any(University.class))).thenReturn(List.of(USER_1));
+        when(userDao.findByUniversity(any(University.class))).thenReturn(List.of(USER_1, USER_2));
         // When
         var result = userService.findUsersByUniversity(University.NAU);
         // Then
-        assertEquals(result, List.of(USER_1));
+        assertEquals(result, List.of(USER_1, USER_2));
     }
 
     @Test
-    void findUsersByUniversity_error() {
+    void findUsersByUniversity_returnEmptyList() {
         // Given
         when(userDao.findByUniversity(any(University.class))).thenReturn(Collections.emptyList());
         // When
@@ -143,7 +177,7 @@ class UserServiceTest {
     }
 
     @Test
-    void insertUser_success() {
+    void insertUser_saveUser() {
         // Given
         when(userDao.findByUsername(anyString())).thenReturn(Optional.of(USER_1));
         // When

@@ -27,8 +27,11 @@ public class UserService {
         return users;
     }
 
-    public Optional<User> getUserById(Long id) {
-        return userDao.findById(id);
+    public Optional<User> getUserById(String id) {
+        if(!id.matches("^[0-9]+$")) {
+            throw new IllegalArgumentException();
+        }
+        return userDao.findById(Long.parseLong(id));
     }
 
     public List<User> findUsersByUniversity(University university) {
@@ -54,7 +57,7 @@ public class UserService {
         return userDao.findByUsername(userName);
     }
 
-    public void removeUser(Long id) throws UserNotFoundException {
+    public void removeUser(String id) throws UserNotFoundException {
         if (id == null) {
             throw new IllegalArgumentException();
         }
@@ -63,7 +66,7 @@ public class UserService {
         if (user.isEmpty()) {
             throw new UserNotFoundException();
         }
-        userDao.deleteById(id);
+        userDao.deleteById(Long.parseLong(id));
     }
 
     private boolean isUserAlreadyExist(User user) {
