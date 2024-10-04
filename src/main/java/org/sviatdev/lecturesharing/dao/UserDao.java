@@ -15,6 +15,6 @@ public interface UserDao extends JpaRepository<User, Long> {
     Optional<User> findByUsername(@Param("username") String username);
 
     @Query("SELECT u FROM User u WHERE u.university = :university")
-    List<User> findUsersByUniversity(@Param("university") University university);
+    List<User> findByUniversity(@Param("university") University university);
 
 }

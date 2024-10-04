@@ -19,19 +19,15 @@ public class UserController {
     @GetMapping("/all")
     public ResponseEntity<?> getUsers(@RequestParam(required = false) Long id) {
         if (id != null) {
-            return userService.getUserById(id);
+            return ResponseEntity.ok(userService.getUserById(id));
         }
-        return userService.getAllUsers();
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/university")
     public ResponseEntity<?> getUsersByUniversity(@RequestParam String name) {
-        try {
-            var university = University.valueOf(name.toUpperCase());
-            return userService.findUsersByUniversity(university);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid university name [" + name + "]");
-        }
+        var university = University.valueOf(name.toUpperCase());
+        return ResponseEntity.ok(userService.findUsersByUniversity(university));
     }
 
     @GetMapping("/get")
@@ -40,12 +36,13 @@ public class UserController {
     }
 
     @PostMapping("/insert/{user}")
-    public ResponseEntity<?> insertUser(@PathVariable User user) {
-        return userService.insertUser(user);
+    public void insertUser(@PathVariable User user) {
+        userService.insertUser(user);
     }
 
     @DeleteMapping(value = "/delete")
     public ResponseEntity<?> deleteUser(@RequestParam Long id) {
-        return userService.removeUser(id);
+        userService.removeUser(id);
+        return ResponseEntity.noContent().build();
     }
 }
