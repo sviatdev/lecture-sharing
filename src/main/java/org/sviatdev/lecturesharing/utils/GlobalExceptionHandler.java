@@ -16,18 +16,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException e) {
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException e) {
         logger.error("User  not found", e);
         return ResponseEntity.status(NOT_FOUND).body(new ErrorResponse("USER_NOT_FOUND", "User not found"));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException e) {
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
         logger.error("Invalid argument", e);
         return ResponseEntity.status(BAD_REQUEST).body(new ErrorResponse("INVALID_ARGUMENT", "Invalid argument"));
     }
 
-    public class ErrorResponse {
+    public static class ErrorResponse {
         private String code;
         private String message;
 
