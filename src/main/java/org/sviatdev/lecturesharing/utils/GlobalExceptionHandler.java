@@ -6,10 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.reactive.result.method.annotation.ResponseEntityExceptionHandler;
+import org.sviatdev.lecturesharing.exceptions.UserAlreadyExistException;
 import org.sviatdev.lecturesharing.exceptions.UserNotFoundException;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -25,6 +25,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
         logger.error("Invalid argument", e);
         return ResponseEntity.status(BAD_REQUEST).body(new ErrorResponse("INVALID_ARGUMENT", "Invalid argument"));
+    }
+
+    @ExceptionHandler(UserAlreadyExistException.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExistException(UserAlreadyExistException e) {
+        logger.error("Invalid argument", e);
+        return ResponseEntity.status(CONFLICT).body(new ErrorResponse("USER_ALREADY_EXIST", "User already exist"));
     }
 
     public static class ErrorResponse {

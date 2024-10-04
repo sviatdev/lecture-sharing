@@ -1,16 +1,14 @@
 package org.sviatdev.lecturesharing.services;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.sviatdev.lecturesharing.dao.UserDao;
+import org.sviatdev.lecturesharing.exceptions.UserAlreadyExistException;
 import org.sviatdev.lecturesharing.exceptions.UserNotFoundException;
 import org.sviatdev.lecturesharing.models.University;
 import org.sviatdev.lecturesharing.models.User;
 
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.http.HttpStatus.*;
 
 @Service
 public class UserService {
@@ -43,8 +41,8 @@ public class UserService {
     public void insertUser(User user) throws UserNotFoundException {
         if (user == null || user.getUsername() == null || user.getPassword() == null) {
             throw new IllegalArgumentException();
-        } else if (!isUserExist(user)) {
-            throw new UserNotFoundException();
+        } else if (!isUserAlreadyExist(user)) {
+            throw new UserAlreadyExistException();
         }
         userDao.save(user);
     }
@@ -68,7 +66,7 @@ public class UserService {
         userDao.deleteById(id);
     }
 
-    private boolean isUserExist(User user) {
+    private boolean isUserAlreadyExist(User user) {
         return userDao.findByUsername(user.getUsername()).isPresent();
     }
 }
