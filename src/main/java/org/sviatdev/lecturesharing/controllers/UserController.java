@@ -27,10 +27,10 @@ public class UserController {
     @GetMapping("/university")
     public ResponseEntity<?> getUsersByUniversity(@RequestParam String name) {
         try {
-            var uni = University.valueOf(name.toUpperCase());
-            return userService.findUsersByUniversity(uni);
+            var university = University.valueOf(name.toUpperCase());
+            return userService.findUsersByUniversity(university);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid university value [" + name + "]");
+            return ResponseEntity.badRequest().body("Invalid university name [" + name + "]");
         }
     }
 
