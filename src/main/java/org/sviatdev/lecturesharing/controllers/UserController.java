@@ -17,27 +17,24 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getUsers() {
+    public ResponseEntity<?> getUsers(@RequestParam(required = false) Long id) {
+        if (id != null) {
+            return userService.getUserById(id);
+        }
         return userService.getAllUsers();
     }
 
-    @GetMapping("/all/university")
-    public ResponseEntity<?> getUsersByUniversity(@RequestParam String university) {
+    @GetMapping("/university")
+    public ResponseEntity<?> getUsersByUniversity(@RequestParam String name) {
         try {
-            var uni = University.valueOf(university.toUpperCase());
+            var uni = University.valueOf(name.toUpperCase());
             return userService.findUsersByUniversity(uni);
         } catch (IllegalArgumentException e) {
-            //TODO: add logger
-            return ResponseEntity.badRequest().body("Invalid university value [" + university + "]");
+            return ResponseEntity.badRequest().body("Invalid university value [" + name + "]");
         }
     }
 
-    @GetMapping("/get/id")
-    public ResponseEntity<?> getUserById(@RequestParam Long id) {
-        return userService.getUserById(id);
-    }
-
-    @GetMapping("/get/username")
+    @GetMapping("/get")
     public ResponseEntity<?> findByUsername(@RequestParam String username) {
         return userService.findByUsername(username);
     }
@@ -47,7 +44,7 @@ public class UserController {
         return userService.insertUser(user);
     }
 
-    @DeleteMapping(value = "/delete/id")
+    @DeleteMapping(value = "/delete")
     public ResponseEntity<?> deleteUser(@RequestParam Long id) {
         return userService.removeUser(id);
     }
