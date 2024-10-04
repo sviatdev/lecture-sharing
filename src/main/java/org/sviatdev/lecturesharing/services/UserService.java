@@ -49,11 +49,11 @@ public class UserService {
         userDao.save(user);
     }
 
-    public ResponseEntity<?> findByUsername(String userName) {
-        var user = userDao.findByUsername(userName);
-        return user.isPresent()
-                ? ResponseEntity.ok(user)
-                : ResponseEntity.status(NOT_FOUND).body("No user found.");
+    public Optional<User> findByUsername(String userName) {
+        if (userName == null || userName.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        return userDao.findByUsername(userName);
     }
 
     public void removeUser(Long id) throws UserNotFoundException {

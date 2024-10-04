@@ -6,6 +6,9 @@ import org.sviatdev.lecturesharing.models.University;
 import org.sviatdev.lecturesharing.models.User;
 import org.sviatdev.lecturesharing.services.UserService;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -25,14 +28,14 @@ public class UserController {
     }
 
     @GetMapping("/university")
-    public ResponseEntity<?> getUsersByUniversity(@RequestParam String name) {
+    public ResponseEntity<List<User>> getUsersByUniversity(@RequestParam String name) {
         var university = University.valueOf(name.toUpperCase());
         return ResponseEntity.ok(userService.findUsersByUniversity(university));
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> findByUsername(@RequestParam String username) {
-        return userService.findByUsername(username);
+    public ResponseEntity<Optional<User>> findByUsername(@RequestParam String username) {
+        return ResponseEntity.ok(userService.findByUsername(username));
     }
 
     @PostMapping("/insert/{user}")
