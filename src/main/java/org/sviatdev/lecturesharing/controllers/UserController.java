@@ -9,7 +9,7 @@ import org.sviatdev.lecturesharing.services.UserService;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-
+    //TODO: add logger
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -21,18 +21,24 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/university={university}/all")
-    public ResponseEntity<?> getUsersByUniversity(@PathVariable String university) {
-        return userService.findUsersByUniversity(University.valueOf(university));
+    @GetMapping("/all/university")
+    public ResponseEntity<?> getUsersByUniversity(@RequestParam String university) {
+        try {
+            var uni = University.valueOf(university.toUpperCase());
+            return userService.findUsersByUniversity(uni);
+        } catch (IllegalArgumentException e) {
+            //TODO: add logger
+            return ResponseEntity.badRequest().body("Invalid university value [" + university + "]");
+        }
     }
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+    @GetMapping("/get/id")
+    public ResponseEntity<?> getUserById(@RequestParam Long id) {
         return userService.getUserById(id);
     }
 
-    @GetMapping("/get/")
-    public ResponseEntity<?> findByUsername(String username) {
+    @GetMapping("/get/username")
+    public ResponseEntity<?> findByUsername(@RequestParam String username) {
         return userService.findByUsername(username);
     }
 
@@ -41,8 +47,8 @@ public class UserController {
         return userService.insertUser(user);
     }
 
-    @DeleteMapping(value = "/delete/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+    @DeleteMapping(value = "/delete/id")
+    public ResponseEntity<?> deleteUser(@RequestParam Long id) {
         return userService.removeUser(id);
     }
 }

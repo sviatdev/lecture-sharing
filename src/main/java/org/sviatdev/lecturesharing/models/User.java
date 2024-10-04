@@ -28,7 +28,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private University university;
 
-    @Column
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     public User() {

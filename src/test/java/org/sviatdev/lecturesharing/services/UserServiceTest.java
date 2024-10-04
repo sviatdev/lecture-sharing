@@ -20,7 +20,15 @@ class UserServiceTest {
 
     private final UserDao userDao = mock(UserDao.class);
     private final UserService userService = new UserService(userDao);
-    private final User USER = new User(1L, "login", "password", "name", "surname", 25, University.NAU, Role.USER);
+    private final User USER = new User(
+            1L,
+            "login",
+            "password",
+            "name",
+            "surname",
+            25,
+            University.NAU,
+            Role.USER);
 
     @Test
     void getAllUsers_success() {
@@ -118,15 +126,6 @@ class UserServiceTest {
         verify(userDao, times(1)).findUsersByUniversity(any(University.class));
     }
 
-    public ResponseEntity<?> removeUser(Long id) {
-        try {
-            userDao.deleteById(id);
-            return ResponseEntity.ok("User deleted successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
-        }
-    }
-
     @Test
     void removeUser_success() {
         // Given/When
@@ -149,5 +148,4 @@ class UserServiceTest {
         assertEquals("An error occurred.", result.getBody());
         verify(userDao, times(1)).deleteById(any(Long.class));
     }
-
 }
