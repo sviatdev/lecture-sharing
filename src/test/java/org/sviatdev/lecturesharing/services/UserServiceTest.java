@@ -69,7 +69,6 @@ class UserServiceTest {
             University.NAU,
             Role.USER);
 
-// TODO: rewrite tests
 
     @Test
     void getAllUsers_returnListOfUsers() {
